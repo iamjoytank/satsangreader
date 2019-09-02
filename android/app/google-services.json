@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1044732831716",
+    "firebase_url": "https://satsang-reader.firebaseio.com",
+    "project_id": "satsang-reader",
+    "storage_bucket": "satsang-reader.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1044732831716:android:452aea03e674625f",
+        "android_client_info": {
+          "package_name": "com.example.satsangreader"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1044732831716-egls7u78fn7l60e6m22i3sl7613to6j5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCyVAf35JfJuPRr-ZkfyAGPqe6f029eISA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1044732831716-egls7u78fn7l60e6m22i3sl7613to6j5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
