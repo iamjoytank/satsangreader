@@ -1,12 +1,10 @@
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:http/http.dart' as http;
 import 'dart:io';
 import 'dart:async';
 import 'package:path_provider/path_provider.dart';
-
-final mainReference1 = FirebaseDatabase.instance.reference();
 
 class PdfLightPage extends StatefulWidget {
   final String url;
@@ -21,7 +19,8 @@ class _PdfLightPageState extends State<PdfLightPage> {
   int _totalPages = 0;
   int _currentPage = 0;
   bool pdfReady = false;
-  PDFViewController _pdfViewController;
+  Completer<PDFViewController> _controller = Completer<PDFViewController>();
+  PDFViewController _pdfView;
   String urlPDFPath = "";
 
   @override
@@ -33,6 +32,7 @@ class _PdfLightPageState extends State<PdfLightPage> {
     getFileFromUrl(widget.url).then((f) {
       setState(() {
         urlPDFPath = f.path;
+        pdfReady = true;
         print("urlPath---" + urlPDFPath);
       });
     });
@@ -55,45 +55,51 @@ class _PdfLightPageState extends State<PdfLightPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("${widget.filename}"),
-      ),
-      body: Stack(
-        children: <Widget>[
-          PDFView(
-            filePath: this.urlPDFPath,
-            autoSpacing: true,
-            enableSwipe: true,
-            pageSnap: true,
-            swipeHorizontal: false,
-            nightMode: false,
-            onError: (e) {
-              print(e);
-            },
-            pageFling: (true),
-            onRender: (_pages) {
-              setState(() {
-                _totalPages = _pages;
-                pdfReady = true;
-              });
-            },
-            onViewCreated: (PDFViewController vc) {
-              setState(() {
-                _pdfViewController = vc;
-              });
-            },
-            onPageChanged: (int page, int total) {
-              setState(() {});
-            },
-            onPageError: (page, e) {},
-          ),
-          !pdfReady
-              ? Center(
-                  child: CircularProgressIndicator(),
-                )
-              : Offstage()
-        ],
-      ),
-    );
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          leading: BackButton(
+               color: Color(0xff4d0e0a)),
+          title: Text("${widget.filename}",style: TextStyle(color: Color(0xff4d0e0a)),),
+        ),
+        body: OrientationBuilder(
+            builder: (BuildContext context, Orientation orientation) {
+          return Stack(
+              children :<Widget>[
+               !pdfReady
+                  ? Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  :PDFView(
+                      filePath: urlPDFPath,
+                      autoSpacing: true,
+                      enableSwipe: true,
+                      pageSnap: true,
+                      swipeHorizontal: true,
+                      nightMode: false,
+                      onError: (e) {
+                        print(e);
+                      },
+                      pageFling: (true),
+                      onRender: (_pages) {
+                        setState(() {
+                          _totalPages = _pages;
+                          pdfReady = true;
+                        });
+                      },
+                      onViewCreated: (PDFViewController vc) {
+                        setState(() {
+                          _pdfView = vc;
+                          SystemChrome.setPreferredOrientations([
+                            DeviceOrientation.portraitUp,
+                          ]);
+                        });
+                      },
+                      onPageChanged: (int page, int total) {
+                        setState(() {});
+                      },
+                      onPageError: (page, e) {},
+                    )]
+                              );
+        }));
   }
 }
